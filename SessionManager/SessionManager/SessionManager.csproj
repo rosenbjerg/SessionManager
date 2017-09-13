@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <RootNamespace>Rosenbjerg.SessionManager</RootNamespace>
+    <Authors>Malte Rosenbjerg</Authors>
+    <Company>Rosenbjerg Softworks</Company>
+    <Description>A minimalist session manager for .NET web servers. Generates the cookies needed to send to the client and keeps track of open sessions and session data</Description>
+    <Copyright>Rosenbjerg Softworks</Copyright>
+  </PropertyGroup>
+
+</Project>
