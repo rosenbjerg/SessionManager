@@ -7,6 +7,11 @@
     <Company>Rosenbjerg Softworks</Company>
     <Description>A minimalist session manager for .NET web servers. Generates the cookies needed to send to the client and keeps track of open sessions and session data</Description>
     <Copyright>Rosenbjerg Softworks</Copyright>
+    <PackageProjectUrl>https://github.com/rosenbjerg/SessionManager</PackageProjectUrl>
+    <PackageLicenseUrl>https://github.com/rosenbjerg/SessionManager/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageTags>session manager web server authentication cookie</PackageTags>
+    <PackageReleaseNotes>First version</PackageReleaseNotes>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
 
 </Project>
