@@ -5,13 +5,15 @@
     <RootNamespace>Rosenbjerg.SessionManager</RootNamespace>
     <Authors>Malte Rosenbjerg</Authors>
     <Company>Rosenbjerg Softworks</Company>
-    <Description>A minimalist session manager for .NET web servers. Generates the cookies needed to send to the client and keeps track of open sessions and session data</Description>
+    <Description>A minimalist cookie-based session manager for .NET web servers. Generates the cookie needed to send to the client and keeps track of open sessions and session data. Non-persistent</Description>
     <Copyright>Rosenbjerg Softworks</Copyright>
     <PackageProjectUrl>https://github.com/rosenbjerg/SessionManager</PackageProjectUrl>
     <PackageLicenseUrl>https://github.com/rosenbjerg/SessionManager/blob/master/LICENSE</PackageLicenseUrl>
     <PackageTags>session manager web server authentication cookie</PackageTags>
-    <PackageReleaseNotes>First version</PackageReleaseNotes>
+    <PackageReleaseNotes>Tokens are now cryptographically strong (using RandomNumberGenerator from System.Security.Cryptography)</PackageReleaseNotes>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Version>1.0.1</Version>
+    <PackageId>SessionManager</PackageId>
   </PropertyGroup>
 
 </Project>

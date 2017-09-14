@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Linq;
+using System.Security.Cryptography;
+using System.Text;
 using System.Threading.Tasks;
 using Rosenbjerg.SessionManager.Rosenbjerg.SessionManager;
 
@@ -28,12 +30,13 @@ namespace Rosenbjerg.SessionManager
         private readonly string _cookie;
         private readonly TimeSpan _sessionLength;
         private readonly ConcurrentDictionary<string, Session> _sessions = new ConcurrentDictionary<string, Session>();
-
+        private readonly RandomNumberGenerator _tokenGenerator = RandomNumberGenerator.Create();
+        
         /// <summary>
         ///     The name of the session token cookie. Defaults to 'token'
         /// </summary>
         public string TokenName = "token";
-
+        
         /// <summary>
         ///     Constructor for SessionManager.
         ///     Remeber to set 'secure' to false unless the cookie is sent over a secured (https) connection.
@@ -93,8 +96,24 @@ namespace Rosenbjerg.SessionManager
             data = s.SessionData;
             return true;
         }
-
-
+        
+        /// <summary>
+        /// Method for creating reasonably secure tokens
+        /// </summary>
+        /// <returns>A cryptographically strong token</returns>
+        private string GenerateToken()
+        {
+            var data = new byte[32];
+            _tokenGenerator.GetBytes(data);
+            var b64 = Convert.ToBase64String(data);
+            var id = new StringBuilder(b64, 46);
+            id.Replace('+', (char)_random.Next(97, 122));
+            id.Replace('=', (char)_random.Next(97, 122));
+            id.Replace('/', (char)_random.Next(97, 122));
+            return id.ToString();
+        }
+        private readonly Random _random = new Random();
+        
         /// <summary>
         ///     Creates a new session and returns the cookie to send the client with 'Set-Cookie' header.
         /// </summary>
@@ -102,24 +121,26 @@ namespace Rosenbjerg.SessionManager
         /// <returns>The string to send with 'Set-Cookie' header</returns>
         public string OpenSession(TSess sessionData)
         {
-            var id = Guid.NewGuid().ToString("N").Substring(8);
+            var id = GenerateToken();
             var exp = DateTime.UtcNow.Add(_sessionLength);
             _sessions.TryAdd(id, new Session(sessionData, exp));
             return $"{TokenName}={id};{_cookie} Expires={exp:R}";
         }
 
         /// <summary>
-        ///     Renews the expiration of an active session and returns the cookie to send the client with 'Set-Cookie' header. Returns
-        ///     empty string if token invalid
+        ///     Renews the expiration and token of an active session and returns the cookie to send the client with 'Set-Cookie' header. 
+        ///     Returns empty string if token invalid
         /// </summary>
-        /// <param name="token">The authentication token to renew the expiration of</param>
+        /// <param name="existingToken">The existing authentication token to replace</param>
         /// <returns>The string to send with 'Set-Cookie' header</returns>
-        public string RenewSession(string token)
+        public string RenewSession(string existingToken)
         {
-            if (!_sessions.TryGetValue(token, out var sess))
+            if (!_sessions.TryRemove(existingToken, out var sess))
                 return "";
+            var newToken = GenerateToken();
             sess.Expires = DateTime.UtcNow.Add(_sessionLength);
-            return $"{TokenName}={token};{_cookie} Expires={sess.Expires:R}";
+            _sessions.TryAdd(newToken, sess);
+            return $"{TokenName}={newToken};{_cookie} Expires={sess.Expires:R}";
         }
 
         /// <summary>
@@ -133,7 +154,7 @@ namespace Rosenbjerg.SessionManager
             cookie = ExpiredCookie;
             return _sessions.TryRemove(token, out var s);
         }
-
+        
         private class Session
         {
             internal Session(TSess tsess, DateTime exp)
