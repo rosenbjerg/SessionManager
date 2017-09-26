@@ -1,25 +1,22 @@
 ﻿using System;
 using System.Collections.Concurrent;
+using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
-using Rosenbjerg.SessionManager.Rosenbjerg.SessionManager;
 
 namespace Rosenbjerg.SessionManager
 {
-    namespace Rosenbjerg.SessionManager
-    {
 
-        /// <summary>
-        ///     The settings available for SameSite
-        /// </summary>
-        public enum SameSiteSetting
-        {
-            None,
-            Lax,
-            Strict
-        }
+    /// <summary>
+    ///     The settings available for SameSite
+    /// </summary>
+    public enum SameSiteSetting
+    {
+        None,
+        Lax,
+        Strict
     }
     /// <summary>
     ///     Minimal session manager for cookie-based authentication.
